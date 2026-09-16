@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest
+.pytest_cache/
+
+# Entornos virtuales
+venv/
+.env/
+env/
+
+# Salidas generadas dinámicamente
+outputs/
+sdss_sample.csv
+
