@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        // Asegurar que el servicio de Jenkins en Windows encuentre la ruta de Python
+        PATH = "C:\\Users\\migue\\AppData\\Local\\Python\\bin;C:\\Users\\migue\\AppData\\Local\\Python\\pythoncore-3.14-64;C:\\Users\\migue\\AppData\\Local\\Python\\pythoncore-3.14-64\\Scripts;${env.PATH}"
+    }
+
     stages {
         stage('1. Checkout del Repositorio') {
             steps {
@@ -63,6 +68,7 @@ pipeline {
         success {
             echo 'Pipeline de Optimizacion Genetica ejecutado exitosamente.'
             echo '¡Pipeline de Optimizacion Genetica ejecutado con exito!'
+            echo 'Pipeline de Optimizacion Genetica ejecutado con exito!'
         }
         failure {
             echo 'El pipeline ha fallado. Revisa los logs de ejecucion en la consola.'
