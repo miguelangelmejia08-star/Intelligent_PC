@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 
 # Asegurar que la raíz del proyecto esté en el path de búsqueda de módulos
+# Asegurar que la raiz del proyecto este en el path de busqueda de modulos
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from ag_feature_selection import FeatureSelectionGA
