@@ -4,6 +4,8 @@ pipeline {
     environment {
         // Asegurar que el servicio de Jenkins en Windows encuentre la ruta de Python
         PATH = "C:\\Users\\migue\\AppData\\Local\\Python\\bin;C:\\Users\\migue\\AppData\\Local\\Python\\pythoncore-3.14-64;C:\\Users\\migue\\AppData\\Local\\Python\\pythoncore-3.14-64\\Scripts;${env.PATH}"
+        // Ruta directa y exacta al ejecutable de Python en Windows
+        PYTHON_EXE = 'C:\\Users\\migue\\AppData\\Local\\Python\\bin\\python.exe'
     }
 
     stages {
@@ -26,6 +28,8 @@ pipeline {
                     } else {
                         bat 'python -m pip install --upgrade pip'
                         bat 'python -m pip install -r requirements.txt'
+                        bat '"%PYTHON_EXE%" -m pip install --upgrade pip'
+                        bat '"%PYTHON_EXE%" -m pip install -r requirements.txt'
                     }
                 }
             }
@@ -39,6 +43,7 @@ pipeline {
                         sh 'python3 -m pytest tests/ || pytest tests/'
                     } else {
                         bat 'python -m pytest tests/'
+                        bat '"%PYTHON_EXE%" -m pytest tests/'
                     }
                 }
             }
@@ -52,6 +57,7 @@ pipeline {
                         sh 'python3 main.py || python main.py'
                     } else {
                         bat 'python main.py'
+                        bat '"%PYTHON_EXE%" main.py'
                     }
                 }
             }
