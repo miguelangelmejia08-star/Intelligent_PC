@@ -22,7 +22,7 @@ def main():
         n = 300
         df_dummy = pd.DataFrame({
             'u': np.random.normal(18, 2, n),
-            'g': np.random.normal(17, 2, n),
+            'g': np.normal(17, 2, n) if hasattr(np, 'normal') else np.random.normal(17, 2, n),
             'r': np.random.normal(16, 2, n),
             'i': np.random.normal(15, 2, n),
             'z': np.random.normal(14, 2, n),
