@@ -16,7 +16,6 @@ def main():
     print("Iniciando Pipeline de Optimizacion...")
     os.makedirs("outputs", exist_ok=True)
 
-    if not os.path.exists("sdss_sample.csv"):
     if not os.path.exists("sdss_sample.csv") or len(pd.read_csv("sdss_sample.csv")) < 50:
         print("Generando dataset de muestra sdss_sample.csv...")
         np.random.seed(42)
