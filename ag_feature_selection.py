@@ -27,8 +27,11 @@ class FeatureSelectionGA:
             return 0.0
 
         X_sub = self.X.iloc[:, cols]
+        min_class_count = self.y.value_counts().min() if hasattr(self.y, 'value_counts') else 0
+        stratify_param = self.y if min_class_count >= 2 else None
         X_train, X_test, y_train, y_test = train_test_split(
             X_sub, self.y, test_size=0.3, random_state=42, stratify=self.y
+            X_sub, self.y, test_size=0.3, random_state=42, stratify=stratify_param
         )
         clf = KNeighborsClassifier(n_neighbors=5)
         clf.fit(X_train, y_train)
