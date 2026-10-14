@@ -1,69 +1,66 @@
 pipeline {
     agent any
 
-    environment {
-        // Asegurar que el servicio de Jenkins en Windows encuentre la ruta de Python
-        PATH = "C:\\Users\\migue\\AppData\\Local\\Python\\bin;C:\\Users\\migue\\AppData\\Local\\Python\\pythoncore-3.14-64;C:\\Users\\migue\\AppData\\Local\\Python\\pythoncore-3.14-64\\Scripts;${env.PATH}"
-        // Ruta directa y exacta al ejecutable de Python en Windows
-        PYTHON_EXE = 'C:\\Users\\migue\\AppData\\Local\\Python\\bin\\python.exe'
-    }
-
     stages {
-        stage('1. Checkout del Repositorio') {
-            steps {
-                checkout scm
-                // Clona directamente el repositorio y rama especificados
-                git branch: 'main', url: 'https://github.com/miguelangelmejia08-star/Intelligent_PC'
-            }
-        }
-
-        stage('2. Instalacion de Dependencias') {
+        stage('1. Instalacion de Dependencias') {
             steps {
                 script {
                     if (isUnix()) {
-                        sh 'python3 -m pip install --upgrade pip'
-                        sh 'python3 -m pip install -r requirements.txt'
-                        sh 'python3 -m pip install --upgrade pip || pip install --upgrade pip || true'
-                        sh 'python3 -m pip install --break-system-packages -r requirements.txt || python3 -m pip install -r requirements.txt || pip install -r requirements.txt'
+                        sh '''
+                            python3 -m venv venv
+                            . venv/bin/activate
+                            pip install --upgrade pip
+                            pip install -r requirements.txt
+                        '''
                     } else {
-                        bat 'python -m pip install --upgrade pip'
-                        bat 'python -m pip install -r requirements.txt'
-                        bat '"%PYTHON_EXE%" -m pip install --upgrade pip'
-                        bat '"%PYTHON_EXE%" -m pip install -r requirements.txt'
+                        bat '''
+                            python -m venv venv
+                            call venv\\Scripts\\activate.bat
+                            pip install --upgrade pip
+                            pip install -r requirements.txt
+                        '''
                     }
                 }
             }
         }
 
-        stage('3. Pruebas Basicas (Dataset y Cromosomas)') {
+        stage('2. Pruebas Unitarias') {
             steps {
                 script {
                     if (isUnix()) {
-                        sh 'python3 -m pytest tests/'
-                        sh 'python3 -m pytest tests/ || pytest tests/'
+                        sh '''
+                            . venv/bin/activate
+                            pytest tests/
+                        '''
                     } else {
-                        bat 'python -m pytest tests/'
-                        bat '"%PYTHON_EXE%" -m pytest tests/'
+                        bat '''
+                            call venv\\Scripts\\activate.bat
+                            pytest tests/
+                        '''
                     }
                 }
             }
         }
 
-        stage('4. Ejecucion del Script Principal (3 Modulos AG)') {
+        stage('3. Ejecucion del Script Principal (3 Modulos AG)') {
             steps {
                 script {
                     if (isUnix()) {
-                        sh 'python3 main.py'
-                        sh 'python3 main.py || python main.py'
+                        sh '''
+                            . venv/bin/activate
+                            python main.py
+                        '''
                     } else {
-                        bat 'python main.py'
-                        bat '"%PYTHON_EXE%" main.py'
+                        bat '''
+                            call venv\\Scripts\\activate.bat
+                            python main.py
+                        '''
                     }
                 }
             }
         }
 
-        stage('5. Almacenamiento de Artefactos') {
+        stage('4. Almacenamiento de Artefactos') {
             steps {
                 archiveArtifacts artifacts: 'outputs/**', fingerprint: true, allowEmptyArchive: false
             }
@@ -72,12 +69,9 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline de Optimizacion Genetica ejecutado exitosamente.'
             echo '¡Pipeline de Optimizacion Genetica ejecutado con exito!'
-            echo 'Pipeline de Optimizacion Genetica ejecutado con exito!'
         }
         failure {
-            echo 'El pipeline ha fallado. Revisa los logs de ejecucion en la consola.'
             echo 'El pipeline ha fallado. Revisa la consola para mas detalles.'
         }
     }
